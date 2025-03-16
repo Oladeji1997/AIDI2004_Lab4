@@ -1,28 +1,35 @@
 document.getElementById('prediction-form').addEventListener('submit', function(event) {
-    event.preventDefault();  // Prevent the form from submitting normally
+    event.preventDefault();  // Prevent the default form submission (page reload)
 
-    let formData = new FormData(this);
-    let data = {
-        features: [
-            parseFloat(formData.get('feature1')),
-            parseFloat(formData.get('feature2')),
-            parseFloat(formData.get('feature3')),
-            parseFloat(formData.get('feature4'))
-        ]
-    };
+    // Gather input data
+    let features = [
+        document.getElementById('feature1').value,
+        document.getElementById('feature2').value,
+        document.getElementById('feature3').value,
+        document.getElementById('feature4').value,
+        document.getElementById('feature5').value,
+        document.getElementById('feature6').value,
+        document.getElementById('feature7').value
+    ];
 
+    // Create a JSON object to send to the backend
+    let data = { features: features };
+
+    // Send data via POST request using fetch
     fetch('/predict', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data)  // Convert data to JSON string
     })
     .then(response => response.json())
-    .then(result => {
-        document.getElementById('prediction').innerText = `Predicted Price: ${result.prediction}`;
+    .then(data => {
+        // Display the prediction result
+        document.getElementById('prediction').textContent = 'Prediction: ' + data.prediction;
     })
     .catch(error => {
-        document.getElementById('prediction').innerText = 'Error occurred. Please try again.';
+        console.error('Error:', error);
+        document.getElementById('prediction').textContent = 'Error in prediction.';
     });
 });
